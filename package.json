@@ -23,8 +23,9 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "polkadot-dev-build-ts && yarn build:zip && yarn build:rollup",
+    "build": "./scripts/build.sh",
     "build:before": "yarn build:i18n",
+    "build:extension": "polkadot-dev-build-ts && yarn build:zip && yarn build:rollup",
     "build:i18n": "i18next-scanner --config i18next-scanner.config.cjs",
     "build:release": "polkadot-ci-ghact-build",
     "build:rollup": "polkadot-exec-rollup --config",
