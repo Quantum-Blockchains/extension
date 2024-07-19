@@ -52,7 +52,7 @@ export default function ImportQr (): React.ReactElement {
             .then(() => onAction('/'))
             .catch((error: Error) => console.error(error));
         } else if (password) {
-          createAccountSuri(name, password, account.content, 'sr25519', account.genesisHash)
+          createAccountSuri(name, password, account.content, 'dilithium2', account.genesisHash)
             .then(() => onAction('/'))
             .catch((error: Error) => console.error(error));
         }

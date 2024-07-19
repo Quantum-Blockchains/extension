@@ -121,7 +121,7 @@ describe('Create Account', () => {
       wrapper.find('[data-button-action="add new root"] button').simulate('click');
       await act(flushAllPromises);
 
-      expect(messaging.createAccountSuri).toHaveBeenCalledWith('abc', 'abcdef', exampleAccount.seed, 'sr25519', kusamaGenesis);
+      expect(messaging.createAccountSuri).toHaveBeenCalledWith('abc', 'abcdef', exampleAccount.seed, 'dilithium2', kusamaGenesis);
       expect(onActionStub).toHaveBeenCalledWith('/');
     });
   });
