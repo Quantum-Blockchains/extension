@@ -61,10 +61,12 @@ export default styled(DidWebsiteEntry)(({ theme }: Props) => `
   .connectedDids{
     margin-left: .5rem;
     background-color: ${theme.primaryColor};
-    color: white;
+    color: ${theme.buttonTextColor};
     cursor: pointer;
-    padding: 0 0.5rem;
-    border-radius: 4px;
+    padding: 1px 0.65rem;
+    border-radius: 999px;
     text-decoration: none;
+    font-size: 12px;
+    line-height: 18px;
   }
 `);

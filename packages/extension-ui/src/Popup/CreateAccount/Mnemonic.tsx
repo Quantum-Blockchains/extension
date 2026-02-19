@@ -3,9 +3,10 @@
 
 import React, { useCallback, useState } from 'react';
 
-import { ButtonArea, Checkbox, MnemonicSeed, NextStepButton, VerticalSpace, Warning } from '../../components/index.js';
+import { ButtonArea, Checkbox, MnemonicSeed, NextStepButton, Warning } from '../../components/index.js';
 import useToast from '../../hooks/useToast.js';
 import useTranslation from '../../hooks/useTranslation.js';
+import { styled } from '../../styled.js';
 
 interface Props {
   onNextStep: () => void;
@@ -30,7 +31,7 @@ function Mnemonic ({ onNextStep, seed }: Props): React.ReactElement<Props> {
       <Warning>
         {t<string>("Please write down your wallet's mnemonic seed and keep it in a safe place. The mnemonic can be used to restore your wallet. Keep it carefully to not lose your assets.")}
       </Warning>
-      <VerticalSpace />
+      <div className='mnemonicSpacer' />
       <Checkbox
         checked={isMnemonicSaved}
         label={t<string>('I have saved my mnemonic seed safely.')}
@@ -48,4 +49,8 @@ function Mnemonic ({ onNextStep, seed }: Props): React.ReactElement<Props> {
   );
 }
 
-export default React.memo(Mnemonic);
+export default React.memo(styled(Mnemonic)`
+  .mnemonicSpacer {
+    height: 8px;
+  }
+`);

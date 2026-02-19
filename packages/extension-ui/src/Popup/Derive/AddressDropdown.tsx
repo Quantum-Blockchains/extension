@@ -5,7 +5,6 @@ import type { ThemeProps } from '../../types.js';
 
 import React, { useCallback, useRef, useState } from 'react';
 
-import arrow from '../../assets/arrow-down.svg';
 import { Address } from '../../components/index.js';
 import useOutsideClick from '../../hooks/useOutsideClick.js';
 import { styled } from '../../styled.js';
@@ -66,16 +65,15 @@ export default styled(AddressDropdown)(({ theme }: ThemeProps) => `
   & > div:first-child > .address::after {
     content: '';
     position: absolute;
-    top: 66%;
+    top: 58%;
     transform: translateY(-50%);
-    right: 11px;
-    width: 30px;
-    height: 30px;
-    background: url(${arrow}) center no-repeat;
-    background-color: ${theme.inputBackground};
+    right: 13px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid ${theme.iconNeutralColor};
     pointer-events: none;
-    border-radius: 4px;
-    border: 1px solid ${theme.boxBorderColor};
   }
 
   .address .copyIcon {
@@ -93,8 +91,9 @@ export default styled(AddressDropdown)(({ theme }: ThemeProps) => `
     padding: 5px;
     border: 1px solid ${theme.boxBorderColor};
     box-sizing: border-box;
-    border-radius: 4px;
+    border-radius: ${theme.borderRadius};
     margin-top: -8px;
+    box-shadow: 0 10px 24px ${theme.boxShadow};
 
     &.visible{
       visibility: visible;

@@ -7,8 +7,8 @@ import type { ThemeProps } from '../../types.js';
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { withRouter } from 'react-router';
 
-import { AccountContext, ActionBar, ActionContext, ActionText, Button, InputWithLabel, Warning } from '../../components/index.js';
 import BoxWithLabel from '../../components/BoxWithLabel.js';
+import { AccountContext, ActionBar, ActionContext, ActionText, Button, InputWithLabel, Warning } from '../../components/index.js';
 import useToast from '../../hooks/useToast.js';
 import useTranslation from '../../hooks/useTranslation.js';
 import { deactivateDid, didsList } from '../../messaging.js';

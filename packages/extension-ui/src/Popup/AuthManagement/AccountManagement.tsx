@@ -73,14 +73,33 @@ function AccountManagement ({ className }: Props): React.ReactElement<Props> {
   );
 }
 
-export default styled(AccountManagement)`
+export default styled(AccountManagement)(({ theme }: ThemeProps) => `
   .accountSelection{
     .accountList{
-      height: 390px;
+      height: 360px;
+      overflow-y: auto;
+      margin-top: 6px;
+      padding-right: 10px;
+      box-sizing: border-box;
+    }
+
+    .accountTree-checkbox {
+      margin-bottom: 6px;
+    }
+
+    .accountWichCheckbox {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .address {
+      box-shadow: 0 6px 16px ${theme.boxShadow};
+      min-width: 0;
     }
   }
+
   .acceptButton {
     width: 90%;
     margin: 0.5rem auto 0;
   }
-`;
+`);

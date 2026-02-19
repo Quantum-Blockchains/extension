@@ -132,7 +132,8 @@ function MenuAdd ({ className, reference }: Props): React.ReactElement<Props> {
 
 export default React.memo(styled(MenuAdd)(({ theme }: Props) => `
   margin-top: 50px;
-  right: 50px; // 24 + 18 + 8
+  right: 24px !important;
+  transform: none !important;
   user-select: none;
 
   .menuItem {

@@ -8,8 +8,8 @@ import fileSaver from 'file-saver';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { withRouter } from 'react-router';
 
-import { ActionBar, ActionContext, ActionText, Button, InputWithLabel, Warning } from '../../components/index.js';
 import BoxWithLabel from '../../components/BoxWithLabel.js';
+import { ActionBar, ActionContext, ActionText, Button, InputWithLabel, Warning } from '../../components/index.js';
 import useTranslation from '../../hooks/useTranslation.js';
 import { exportDid } from '../../messaging.js';
 import { Header } from '../../partials/index.js';

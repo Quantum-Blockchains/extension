@@ -28,6 +28,7 @@ export default styled(ButtonArea)(({ theme }: ThemeProps) => `
   padding: 12px 24px;
   margin-left: 0;
   margin-right: 0;
+  backdrop-filter: blur(3px);
 
   & > button:not(:last-of-type) {
     margin-right: 8px;

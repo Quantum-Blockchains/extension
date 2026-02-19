@@ -7,8 +7,8 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import { ActionContext, Button, ButtonArea, DidSigningReqContext, InputWithLabel, Link, Warning } from '../../components/index.js';
 import useTranslation from '../../hooks/useTranslation.js';
-import { Header } from '../../partials/index.js';
 import { approveDidSignPassword, cancelDidSignRequest } from '../../messaging.js';
+import { Header } from '../../partials/index.js';
 import { styled } from '../../styled.js';
 import TransactionIndex from '../Signing/TransactionIndex.js';
 
@@ -114,23 +114,23 @@ function DidSigning ({ className }: Props): React.ReactElement<Props> {
           </div>
         </div>
         <div className='didPassword'>
-        <InputWithLabel
-          isError={!password || !!error}
-          label={t<string>('Password for this DID')}
-          onChange={setPassword}
-          onEnter={_onSign}
-          type='password'
-          value={password}
-          withoutMargin
-        />
-        {error && (
-          <Warning
-            isBelowInput
-            isDanger
-          >
-            {error}
-          </Warning>
-        )}
+          <InputWithLabel
+            isError={!password || !!error}
+            label={t<string>('Password for this DID')}
+            onChange={setPassword}
+            onEnter={_onSign}
+            type='password'
+            value={password}
+            withoutMargin
+          />
+          {error && (
+            <Warning
+              isBelowInput
+              isDanger
+            >
+              {error}
+            </Warning>
+          )}
         </div>
       </div>
       <ButtonArea>
@@ -168,13 +168,14 @@ export default styled(DidSigning)(({ theme }: Props) => `
     display: flex;
     gap: 12px;
     padding: 12px;
+    box-shadow: 0 6px 16px ${theme.boxShadow};
   }
 
   .didIcon {
     align-items: center;
-    background: linear-gradient(135deg, #1f9d8f, #2a5d65);
+    background: linear-gradient(135deg, ${theme.buttonBackground}, ${theme.buttonBackgroundHover});
     border-radius: 50%;
-    color: #fff;
+    color: ${theme.buttonTextColor};
     display: flex;
     font-size: 12px;
     font-weight: 700;

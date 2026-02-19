@@ -37,8 +37,9 @@ export default styled(MenuItem)(({ theme }: ThemeProps) => `
     line-height: 14px;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-    color: ${theme.textColor};
-    opacity: 0.65;
+    color: ${theme.labelColor};
+    opacity: 0.95;
+    font-weight: 700;
   }
 
   &+&.isTitled {

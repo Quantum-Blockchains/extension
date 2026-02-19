@@ -54,14 +54,16 @@ export default styled(Button)(({ isDanger, theme }: Props) => `
   width: 100%;
   height: ${isDanger ? '40px' : '48px'};
   box-sizing: border-box;
-  border: none;
+  border: 1px solid transparent;
   border-radius: ${theme.borderRadius};
   color: ${theme.buttonTextColor};
   font-size: 15px;
+  font-weight: 700;
   line-height: 20px;
   padding: 0 1rem;
   position: relative;
   text-align: center;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 
   &:disabled {
     cursor: default;
@@ -69,6 +71,15 @@ export default styled(Button)(({ isDanger, theme }: Props) => `
 
   &:not(:disabled):hover {
     background: ${isDanger ? theme.buttonBackgroundDangerHover : theme.buttonBackgroundHover};
+    transform: translateY(-1px);
+  }
+
+  &:not(:disabled):focus-visible {
+    box-shadow: ${theme.focusRing};
+  }
+
+  &:not(:disabled):active {
+    transform: translateY(0);
   }
 
   .busyOverlay,
@@ -77,7 +88,7 @@ export default styled(Button)(({ isDanger, theme }: Props) => `
   }
 
   .disabledOverlay {
-    background: rgba(96,96,96,0.75);
+    background: ${theme.surfaceOverlay};
     border-radius: ${theme.borderRadius};
     bottom: 0;
     left: 0;
@@ -91,7 +102,7 @@ export default styled(Button)(({ isDanger, theme }: Props) => `
   }
 
   &.isBusy {
-    background: rgba(96,96,96,0.15);
+    background: ${theme.surfaceOverlay};
 
     .children {
       opacity: 0.25;

@@ -22,4 +22,4 @@ const DidSigningReqContext = React.createContext<DidSigningRequest[]>([]);
 const ThemeSwitchContext = React.createContext<(theme: AvailableThemes) => void>(noop);
 const ToastContext = React.createContext<({show: (message: string) => void})>({ show: noop });
 
-export { AccountContext, ActionContext, AuthorizeReqContext, MediaContext, MetadataReqContext, SettingsContext, SigningReqContext, DidSigningReqContext, ThemeSwitchContext, ToastContext };
+export { AccountContext, ActionContext, AuthorizeReqContext, DidSigningReqContext, MediaContext, MetadataReqContext, SettingsContext, SigningReqContext, ThemeSwitchContext, ToastContext };

@@ -221,5 +221,12 @@
   "Selected DID": "",
   "Origin": "",
   "Password for this DID": "",
-  "Sign DID payload": ""
+  "Sign DID payload": "",
+  "Details": "",
+  "Sign & Create": "",
+  "Created DID": "",
+  "No DIDs found": "",
+  "Create account": "",
+  "Save seed": "",
+  "Add the account": ""
 }

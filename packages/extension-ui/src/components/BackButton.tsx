@@ -34,6 +34,7 @@ export default styled(BackButton)(({ theme }: ThemeProps) => `
   background: ${theme.backButtonBackground};
   margin-right: 11px;
   width: 42px;
+  border: 1px solid ${theme.inputBorderColor};
 
   .arrowLeft {
     color: ${theme.backButtonTextColor};

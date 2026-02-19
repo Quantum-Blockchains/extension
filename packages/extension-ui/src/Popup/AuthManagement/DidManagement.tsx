@@ -73,6 +73,7 @@ function DidManagement ({ className }: Props): React.ReactElement<Props> {
   const _onSelectAllDids = (): void => {
     if (areAllDidsSelected) {
       setSelectedDids([]);
+
       return;
     }
 
@@ -121,22 +122,28 @@ function DidManagement ({ className }: Props): React.ReactElement<Props> {
               />
               <div className='didList'>
                 {dids.map(({ did, name }) => (
-                  <div className='didItem' key={did}>
-                    <div className='didRow'>
-                      <div className='didIcon' aria-hidden='true'>
-                        <span>ID</span>
-                      </div>
-                      <div className='didBody'>
-                        <div className='didName'>{name || t<string>('DID')}</div>
-                        <div className='didValue'>{did}</div>
-                      </div>
-                      <div className='didCheckbox'>
-                        <Checkbox
-                          checked={selectedDids.includes(did)}
-                          className='did-checkbox'
-                          label=''
-                          onChange={() => _onToggleDid(did)}
-                        />
+                  <div
+                    className='didWithCheckbox'
+                    key={did}
+                  >
+                    <Checkbox
+                      checked={selectedDids.includes(did)}
+                      className='did-checkbox'
+                      label=''
+                      onChange={() => _onToggleDid(did)}
+                    />
+                    <div className='didItem'>
+                      <div className='didRow'>
+                        <div
+                          aria-hidden='true'
+                          className='didIcon'
+                        >
+                          <span>ID</span>
+                        </div>
+                        <div className='didBody'>
+                          <div className='didName'>{name || t<string>('DID')}</div>
+                          <div className='didValue'>{did}</div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -157,68 +164,108 @@ function DidManagement ({ className }: Props): React.ReactElement<Props> {
   );
 }
 
-export default styled(DidManagement)(({ theme }) => `
+export default styled(DidManagement)(({ theme }: Props) => `
   .didList {
     height: 360px;
     overflow-y: auto;
     margin-top: 6px;
+    padding-right: 10px;
+    box-sizing: border-box;
   }
 
   .didItem {
     border: 1px solid ${theme.inputBorderColor};
-    border-radius: 8px;
+    border-radius: ${theme.borderRadius};
     background: ${theme.readonlyInputBackground};
-    padding: 10px 12px;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    margin-bottom: 0;
+    box-shadow: 0 6px 16px ${theme.boxShadow};
+    flex: 1;
+  }
+
+  .didWithCheckbox {
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
     margin-bottom: 10px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .didWithCheckbox > .didItem {
+    width: 100%;
+    min-width: 0;
   }
 
   .didRow {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
   }
 
   .didBody {
     min-width: 0;
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
   .didName {
     color: ${theme.textColor};
-    font-size: 14px;
-    line-height: 18px;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 600;
   }
 
   .didValue {
     color: ${theme.labelColor};
     font-size: 12px;
     line-height: 16px;
-    word-break: break-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .didIcon {
-    width: 32px;
-    height: 32px;
+    width: 50px;
+    height: 50px;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #2e7d6a;
-    color: #fff;
-    font-size: 14px;
-    flex: 0 0 32px;
+    background: ${theme.primaryColor};
+    color: ${theme.buttonTextColor};
+    font-size: 16px;
+    font-weight: 700;
+    flex: 0 0 50px;
   }
 
-  .didCheckbox {
-    display: inline-flex;
-    align-items: center;
-    align-self: center;
-  }
-
-  .didCheckbox .checkbox {
-    display: flex;
-    align-items: center;
+  .didWithCheckbox > .did-checkbox {
+    display: inline-block;
+    width: 18px;
+    min-width: 18px;
     margin: 0;
+
+    label {
+      display: block;
+      width: 18px;
+      height: 16px;
+      line-height: 16px;
+      padding-left: 18px;
+      padding-top: 0;
+      font-size: 0;
+    }
+
+    label span {
+      top: 0;
+    }
   }
 
   .didWarning {

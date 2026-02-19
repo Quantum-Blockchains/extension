@@ -4,10 +4,12 @@
 import React, { useCallback, useState } from 'react';
 
 import { Name, Password } from '../partials/index.js';
-import { BackButton, ButtonArea, NextStepButton, VerticalSpace } from './index.js';
+import { styled } from '../styled.js';
+import { BackButton, ButtonArea, NextStepButton } from './index.js';
 
 interface Props {
   buttonLabel?: string;
+  className?: string;
   isBusy: boolean;
   onBackClick?: () => void;
   onCreate: (name: string, password: string) => void | Promise<void | boolean>;
@@ -15,7 +17,7 @@ interface Props {
   onPasswordChange?: (password: string) => void;
 }
 
-function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCreate, onNameChange, onPasswordChange }: Props): React.ReactElement<Props> {
+function AccountNamePasswordCreation ({ buttonLabel, className, isBusy, onBackClick, onCreate, onNameChange, onPasswordChange }: Props): React.ReactElement<Props> {
   const [name, setName] = useState<string | null>(null);
   const [password, setPassword] = useState<string | null>(null);
 
@@ -50,13 +52,13 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCrea
   );
 
   return (
-    <>
+    <div className={className}>
       <Name
         isFocused
         onChange={_onNameChange}
       />
       <Password onChange={_onPasswordChange} />
-      <VerticalSpace />
+      <div className='accountActionSpacer' />
       {onBackClick && buttonLabel && (
         <ButtonArea>
           <BackButton onClick={_onBackClick} />
@@ -70,8 +72,12 @@ function AccountNamePasswordCreation ({ buttonLabel, isBusy, onBackClick, onCrea
           </NextStepButton>
         </ButtonArea>
       )}
-    </>
+    </div>
   );
 }
 
-export default React.memo(AccountNamePasswordCreation);
+export default React.memo(styled(AccountNamePasswordCreation)`
+  .accountActionSpacer {
+    height: 8px;
+  }
+`);

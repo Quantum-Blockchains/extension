@@ -23,12 +23,24 @@ function Main ({ children, className }: Props): React.ReactElement<Props> {
 export default styled(Main)(({ theme }: ThemeProps) => `
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 2px);
+  height: 100vh;
   background: ${theme.background};
   color: ${theme.textColor};
   font-size: ${theme.fontSize};
   line-height: ${theme.lineHeight};
-  border: 1px solid ${theme.inputBorderColor};
+  border: ${theme.id === 'light' ? 'none' : `1px solid ${theme.inputBorderColor}`};
+  border-radius: ${theme.id === 'light' ? '0' : '12px'};
+  box-shadow: ${theme.id === 'light' ? 'none' : `0 14px 32px ${theme.boxShadow}`};
+  overflow: hidden;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(100% 70% at 100% 0%, ${theme.warningBackground}, transparent 55%);
+  }
 
   * {
     font-family: ${theme.fontFamily};
@@ -37,5 +49,6 @@ export default styled(Main)(({ theme }: ThemeProps) => `
   > * {
     padding-left: 24px;
     padding-right: 24px;
+    position: relative;
   }
 `);

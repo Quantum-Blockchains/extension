@@ -7,8 +7,8 @@ import type { ThemeProps } from '../../types.js';
 import { faCopy } from '@fortawesome/free-regular-svg-icons';
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import CopyToClipboard from 'react-copy-to-clipboard';
 
 import getNetworkMap from '@polkadot/extension-ui/util/getNetworkMap';
 
@@ -40,6 +40,7 @@ function Accounts ({ className }: Props): React.ReactElement {
   const [filter, setFilter] = useState('');
   const [filteredAccount, setFilteredAccount] = useState<AccountWithChildren[]>([]);
   const [dids, setDids] = useState<DidRecord[]>([]);
+  const [filteredDids, setFilteredDids] = useState<DidRecord[]>([]);
   const [didMenuOpen, setDidMenuOpen] = useState<string | null>(null);
   const { hierarchy } = useContext(AccountContext);
   const onAction = useContext(ActionContext);
@@ -61,6 +62,17 @@ function Accounts ({ className }: Props): React.ReactElement {
         : hierarchy
     );
   }, [filter, hierarchy, networkMap]);
+
+  useEffect(() => {
+    setFilteredDids(
+      filter
+        ? dids.filter(({ did, name }) =>
+          (name || '').toLowerCase().includes(filter) ||
+          did.toLowerCase().includes(filter)
+        )
+        : dids
+    );
+  }, [dids, filter]);
 
   useOutsideClick([didMenuRef, didMenuToggleRef], () => {
     if (didMenuOpen) {
@@ -106,20 +118,22 @@ function Accounts ({ className }: Props): React.ReactElement {
         : (
           <>
             <Header
-              onFilter={isAccountsTab ? _onFilter : undefined}
+              addMenuItems={isAccountsTab
+                ? undefined
+                : (
+                  <MenuItem className='menuItem'>
+                    <Link to='/did/create'>
+                      <FontAwesomeIcon icon={faPlusCircle} />
+                      <span>{t<string>('Create DID')}</span>
+                    </Link>
+                  </MenuItem>
+                )}
+              connectedPathMulti={isAccountsTab ? '/auth-list' : '/did/auth-list'}
+              connectedPathSingle={isAccountsTab ? '/url/manage' : '/did/manage'}
+              onFilter={_onFilter}
               showAdd
               showConnectedAccounts
-              showSearch={isAccountsTab}
-              connectedPathSingle={isAccountsTab ? '/url/manage' : '/did/manage'}
-              connectedPathMulti={isAccountsTab ? '/auth-list' : '/did/auth-list'}
-              addMenuItems={isAccountsTab ? undefined : (
-                <MenuItem className='menuItem'>
-                  <Link to='/did/create'>
-                    <FontAwesomeIcon icon={faPlusCircle} />
-                    <span>{t<string>('Create DID')}</span>
-                  </Link>
-                </MenuItem>
-              )}
+              showSearch
               showSettings
               text={isAccountsTab ? t<string>('Accounts') : 'DIDs'}
             />
@@ -167,12 +181,15 @@ function Accounts ({ className }: Props): React.ReactElement {
                     : (
                       <>
                         <div className='didsList didsScroll'>
-                          {dids.map(({ did, name, deactivated }) => (
+                          {filteredDids.map(({ deactivated, did, name }) => (
                             <div
                               className='didItem'
                               key={did}
                             >
-                              <div className='didIcon' aria-hidden='true'>
+                              <div
+                                aria-hidden='true'
+                                className='didIcon'
+                              >
                                 <span>ID</span>
                               </div>
                               <div className='didBody'>
@@ -242,6 +259,11 @@ function Accounts ({ className }: Props): React.ReactElement {
                               </div>
                             </div>
                           ))}
+                          {filteredDids.length === 0 && (
+                            <div className='noDidsMatch'>
+                              {t<string>('No DIDs found')}
+                            </div>
+                          )}
                         </div>
                       </>
                     )
@@ -262,7 +284,7 @@ export default styled(Accounts)(({ theme }: Props) => `
   .tabs {
     display: flex;
     gap: 8px;
-    margin: -12px 16px 12px;
+    margin: 0 16px 12px;
   }
 
   .tab {
@@ -273,7 +295,9 @@ export default styled(Accounts)(({ theme }: Props) => `
     cursor: pointer;
     font-family: ${theme.fontFamily};
     font-size: 12px;
-    padding: 6px 12px;
+    font-weight: 700;
+    padding: 6px 14px;
+    transition: all 0.15s ease;
   }
 
   .tab.isActive {
@@ -287,6 +311,8 @@ export default styled(Accounts)(({ theme }: Props) => `
     display: flex;
     flex-direction: column;
     scrollbar-width: none;
+    position: relative;
+    z-index: 1;
   }
 
   .contentScroll {
@@ -312,11 +338,17 @@ export default styled(Accounts)(({ theme }: Props) => `
   }
 
   .didsList {
-    padding: 0 16px 16px;
+    padding: 0 0 16px;
   }
 
   .didsList .generateDid {
     margin-bottom: 12px;
+  }
+
+  .noDidsMatch {
+    color: ${theme.labelColor};
+    font-size: 13px;
+    padding: 10px 6px;
   }
 
   .didsScroll {
@@ -331,21 +363,23 @@ export default styled(Accounts)(({ theme }: Props) => `
   }
 
   .didItem {
-    background: ${theme.readonlyInputBackground};
-    border: 1px solid ${theme.inputBorderColor};
+    background: ${theme.boxBackground};
+    border: 1px solid ${theme.boxBorderColor};
     border-radius: ${theme.borderRadius};
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
+    gap: 10px;
+    min-height: 72px;
+    padding: 0;
     margin-bottom: 10px;
     position: relative;
+    box-shadow: 0 6px 16px ${theme.boxShadow};
   }
 
   .didName {
     color: ${theme.textColor};
     font-size: 14px;
-    margin-bottom: 4px;
+    margin-bottom: 0;
     font-weight: 600;
   }
 
@@ -353,6 +387,7 @@ export default styled(Accounts)(({ theme }: Props) => `
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-top: 2px;
   }
 
   .didStatus {
@@ -360,28 +395,32 @@ export default styled(Accounts)(({ theme }: Props) => `
     border: 1px solid ${theme.inputBorderColor};
     color: ${theme.labelColor};
     font-size: 10px;
-    line-height: 14px;
-    padding: 1px 8px;
+    line-height: 1;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
     text-transform: uppercase;
     letter-spacing: 0.3px;
   }
 
   .didStatus.active {
-    border-color: #2e7d6a;
-    color: ${theme.textColor};
-    background: rgba(46, 125, 106, 0.18);
+    border-color: ${theme.inputBorderColor};
+    color: ${theme.subTextColor};
+    background: ${theme.highlightedAreaBackground};
   }
 
   .didStatus.inactive {
-    border-color: #a14b4b;
-    color: ${theme.textColor};
-    background: rgba(161, 75, 75, 0.18);
+    border-color: ${theme.buttonBackgroundDanger};
+    color: ${theme.subTextColor};
+    background: ${theme.dangerBackground};
   }
 
   .didStatus.unknown {
     border-color: ${theme.inputBorderColor};
     color: ${theme.labelColor};
-    background: rgba(255, 255, 255, 0.04);
+    background: ${theme.highlightedAreaBackground};
   }
 
   .didValue {
@@ -390,6 +429,8 @@ export default styled(Accounts)(({ theme }: Props) => `
     display: flex;
     align-items: center;
     gap: 6px;
+    line-height: 16px;
+    margin-top: 4px;
   }
 
   .didText {
@@ -397,6 +438,9 @@ export default styled(Accounts)(({ theme }: Props) => `
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
   }
 
   .copyIcon {
@@ -404,62 +448,49 @@ export default styled(Accounts)(({ theme }: Props) => `
     cursor: pointer;
     flex: 0 0 auto;
     align-self: center;
+    width: 14px;
+    height: 14px;
   }
 
   .didIcon {
-    width: 32px;
-    height: 32px;
+    width: 50px;
+    height: 50px;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: ${theme.buttonBackground};
-    color: ${theme.buttonTextColor};
+    background: ${theme.identiconBackground};
+    color: ${theme.primaryColor};
+    border: 1px solid ${theme.inputBorderColor};
     font-size: 16px;
-    flex: 0 0 32px;
-  }
-
-  .didItem:nth-child(6n + 1) .didIcon {
-    background: #2e7d6a;
-    color: ${theme.textColor};
-  }
-
-  .didItem:nth-child(6n + 2) .didIcon {
-    background: #b8862a;
-    color: ${theme.bodyColor};
-  }
-
-  .didItem:nth-child(6n + 3) .didIcon {
-    background: #a14b4b;
-    color: ${theme.textColor};
-  }
-
-  .didItem:nth-child(6n + 4) .didIcon {
-    background: #3a5c8a;
-    color: ${theme.textColor};
-  }
-
-  .didItem:nth-child(6n + 5) .didIcon {
-    background: #4c5a6e;
-    color: ${theme.textColor};
-  }
-
-  .didItem:nth-child(6n) .didIcon {
-    background: ${theme.buttonBackground};
-    color: ${theme.buttonTextColor};
+    font-weight: 700;
+    flex: 0 0 50px;
+    margin-left: 15px;
   }
 
   .didBody {
     min-width: 0;
     flex: 1;
+    padding: 0 0 0 2px;
   }
 
   .didActions {
     align-items: center;
     display: inline-flex;
-    height: 100%;
+    height: 72px;
     justify-content: center;
-    width: 32px;
+    width: 40px;
+    position: relative;
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 24%;
+      bottom: 24%;
+      width: 1px;
+      background: ${theme.boxBorderColor};
+    }
   }
 
   .didActionsToggle {
@@ -468,7 +499,12 @@ export default styled(Accounts)(({ theme }: Props) => `
     display: inline-flex;
     height: 100%;
     justify-content: center;
-    width: 32px;
+    width: 40px;
+
+    &:hover {
+      background: ${theme.highlightedAreaBackground};
+      border-radius: 0 ${theme.borderRadius} ${theme.borderRadius} 0;
+    }
   }
 
   .detailsIcon {
@@ -488,7 +524,7 @@ export default styled(Accounts)(({ theme }: Props) => `
   }
 
   .menuItem {
-    border-radius: 8px;
+    border-radius: ${theme.borderRadius};
     display: block;
     font-size: 15px;
     line-height: 20px;
@@ -513,6 +549,6 @@ export default styled(Accounts)(({ theme }: Props) => `
   }
 
   height: calc(100vh - 2px);
-  margin-top: -25px;
-  padding-top: 25px;
+  margin-top: 0;
+  padding-top: 0;
 `);

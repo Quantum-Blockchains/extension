@@ -28,8 +28,9 @@ export default styled(Label)(({ theme }: ThemeProps) => `
   label {
     font-size: ${theme.inputLabelFontSize};
     line-height: 14px;
-    letter-spacing: 0.04em;
-    opacity: 0.65;
+    letter-spacing: 0.07em;
+    opacity: 0.85;
+    font-weight: 700;
     margin-bottom: 12px;
     text-transform: uppercase;
   }

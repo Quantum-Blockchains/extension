@@ -84,6 +84,7 @@ function Request ({ authId, className, isFirst, request: { origin }, url }: Prop
   const _onSelectAllDids = (): void => {
     if (areAllDidsSelected) {
       setSelectedDids([]);
+
       return;
     }
 

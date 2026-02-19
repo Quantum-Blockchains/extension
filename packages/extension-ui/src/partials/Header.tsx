@@ -147,17 +147,20 @@ function Header ({ addMenuItems, children, className = '', connectedPathMulti, c
                 withReset
               />
             )}
-            {showSearch && (
-              <FontAwesomeIcon
-                className={`searchIcon ${isSearchOpen ? 'selected' : ''}`}
-                icon={faSearch}
-                onClick={_toggleSearch}
-                size='lg'
-              />
-            )}
           </div>
         )}
         <div className='popupMenus'>
+          {showSearch && (
+            <div
+              className='popupToggle searchToggle'
+              onClick={_toggleSearch}
+            >
+              <FontAwesomeIcon
+                className={`searchIcon ${isSearchOpen ? 'selected' : ''}`}
+                icon={faSearch}
+              />
+            </div>
+          )}
           {showAdd && (
             <div
               className='popupToggle'
@@ -167,7 +170,6 @@ function Header ({ addMenuItems, children, className = '', connectedPathMulti, c
               <FontAwesomeIcon
                 className={`plusIcon ${isAddOpen ? 'selected' : ''}`}
                 icon={faPlusCircle}
-                size='lg'
               />
             </div>
           )}
@@ -181,7 +183,6 @@ function Header ({ addMenuItems, children, className = '', connectedPathMulti, c
               <FontAwesomeIcon
                 className={`cogIcon ${isSettingsOpen ? 'selected' : ''}`}
                 icon={faCog}
-                size='lg'
               />
             </div>
           )}
@@ -215,7 +216,8 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
   font-weight: normal;
   margin: 0;
   position: relative;
-  margin-bottom: 25px;
+  z-index: 200;
+  margin-bottom: 20px;
 
   && {
     padding: 0 0 0;
@@ -226,7 +228,10 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
     justify-content: space-between;
     width: 100%;
     border-bottom: 1px solid ${theme.inputBorderColor};
-    min-height: 70px;
+    min-height: 72px;
+    background: ${theme.background};
+    position: relative;
+    z-index: 200;
 
     .branding {
       display: flex;
@@ -248,8 +253,10 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
       .logoText {
         color: ${theme.textColor};
         font-family: ${theme.fontFamily};
-        font-size: 20px;
-        line-height: 27px;
+        font-size: 19px;
+        font-weight: 700;
+        line-height: 24px;
+        letter-spacing: 0.02em;
       }
     }
 
@@ -266,8 +273,11 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
 
     .connectedAccounts {
       border: 1px solid ${theme.inputBorderColor};
-      border-radius: 4px;
-      padding: 0 0.5rem;
+      border-radius: 999px;
+      padding: 1px 0.65rem;
+      background: ${theme.readonlyInputBackground};
+      color: ${theme.subTextColor};
+      font-size: 12px;
 
       .greenDot {
         margin-right: 0.3rem;
@@ -282,26 +292,28 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
       display: flex;
       justify-content: end;
       align-items: center;
+      padding-right: 0;
 
       .searchIcon {
-        margin-right: 8px;
-
-        &:hover {
-          cursor: pointer;
-        }
+        height: 14px;
+        width: 14px;
+        padding: 0;
+        display: block;
       }
     }
 
     .popupToggle {
-      display: inline-block;
-      vertical-align: middle;
-
-      &:last-child {
-        margin-right: 24px;
-      }
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      height: 28px;
+      width: 28px;
+      transition: background 0.15s ease;
 
       &:hover {
         cursor: pointer;
+        background: ${theme.highlightedAreaBackground};
       }
     }
 
@@ -309,15 +321,20 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
       width: 100%
     }
 
-    .popupToggle+.popupToggle {
-      margin-left: 8px;
+    .popupMenus {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 10px;
     }
 
     .customAddMenu {
       margin-top: 50px;
-      right: 50px;
+      right: 24px !important;
+      transform: none !important;
       min-width: 200px;
       user-select: none;
+      z-index: 5000;
     }
 
     .customAddMenu .menuItem {
@@ -342,9 +359,15 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
 
   .plusIcon, .cogIcon, .searchIcon {
     color: ${theme.iconNeutralColor};
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    min-height: 14px;
+    display: block;
 
     &.selected {
       color: ${theme.primaryColor};
+      background: ${theme.highlightedAreaBackground};
     }
   }
 
@@ -352,6 +375,11 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
     color: ${theme.labelColor};
     margin-right: 1rem;
     cursor: pointer;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: ${theme.primaryColor};
+    }
   }
 
   &.smallMargin {

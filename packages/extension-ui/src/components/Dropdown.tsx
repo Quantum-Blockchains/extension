@@ -5,7 +5,6 @@ import type { ThemeProps } from '../types.js';
 
 import React, { useCallback } from 'react';
 
-import arrow from '../assets/arrow-down.svg';
 import { styled } from '../styled.js';
 import Label from './Label.js';
 
@@ -64,6 +63,8 @@ function Dropdown ({ className, defaultValue, isDisabled, isFocussed, label, onB
 
 export default React.memo(styled(Dropdown)(({ isError, label, theme }: Props) => `
   position: relative;
+  --select-menu-bg: ${theme.readonlyInputBackground};
+  --select-menu-selected-bg: ${theme.highlightedAreaBackground};
 
   select {
     -webkit-appearance: none;
@@ -82,10 +83,27 @@ export default React.memo(styled(Dropdown)(({ isError, label, theme }: Props) =>
     padding: 0.5rem 0.75rem;
     width: 100%;
     cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:focus-visible {
+      border-color: ${theme.primaryColor};
+      box-shadow: ${theme.focusRing};
+      outline: none;
+    }
 
     &:read-only {
       box-shadow: none;
       outline: none;
+    }
+
+    option {
+      background: var(--select-menu-bg);
+      color: ${theme.textColor};
+    }
+
+    option:checked {
+      background: var(--select-menu-selected-bg);
+      color: ${theme.textColor};
     }
   }
 
@@ -94,10 +112,12 @@ export default React.memo(styled(Dropdown)(({ isError, label, theme }: Props) =>
     position: absolute;
     top: ${label ? 'calc(50% + 14px)' : '50%'};
     transform: translateY(-50%);
-    right: 12px;
-    width: 8px;
-    height: 6px;
-    background: url(${arrow}) center no-repeat;
+    right: 14px;
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 6px solid ${theme.iconNeutralColor};
     pointer-events: none;
   }
 `));

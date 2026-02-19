@@ -5,15 +5,15 @@ import type { ThemeProps } from '../../types.js';
 
 import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-import { AccountContext, ActionContext, BackButton, ButtonArea, InputWithLabel, NextStepButton, ValidatedInput, VerticalSpace, Warning } from '../../components/index.js';
 import BoxWithLabel from '../../components/BoxWithLabel.js';
+import { AccountContext, ActionContext, BackButton, ButtonArea, InputWithLabel, NextStepButton, ValidatedInput, VerticalSpace, Warning } from '../../components/index.js';
 import useToast from '../../hooks/useToast.js';
 import useTranslation from '../../hooks/useTranslation.js';
-import { Header } from '../../partials/index.js';
 import { createDid } from '../../messaging.js';
+import { Header } from '../../partials/index.js';
+import { styled } from '../../styled.js';
 import { allOf, isNotShorterThan, isSameAs } from '../../util/validators.js';
 import AddressDropdown from '../Derive/AddressDropdown.js';
-import { styled } from '../../styled.js';
 
 interface Props extends ThemeProps {
   className?: string;
@@ -76,6 +76,7 @@ function CreateDid ({ className }: Props): React.ReactElement<Props> {
     }
 
     setIsBusy(true);
+
     try {
       const didRecord = await createDid(selectedAddress, name, accountPassword, didPassword);
 
@@ -116,12 +117,23 @@ function CreateDid ({ className }: Props): React.ReactElement<Props> {
       <Header
         showBackArrow
         showSettings
-        text={t<string>('Generate DID')}
+        text={t<string>('Create DID')}
       />
+      <div className='stepsBar'>
+        <div className={`step ${step === 'details' ? 'isActive' : 'isDone'}`}>
+          <span className='index'>1</span>
+          <span className='name'>{t<string>('Details')}</span>
+        </div>
+        <div className='divider' />
+        <div className={`step ${step === 'sign' ? 'isActive' : ''}`}>
+          <span className='index'>2</span>
+          <span className='name'>{t<string>('Sign & Create')}</span>
+        </div>
+      </div>
       {generatedDid && (
         <div className='generatedDid'>
           <BoxWithLabel
-            label={t<string>('Generated DID')}
+            label={t<string>('Created DID')}
             value={generatedDid}
           />
         </div>
@@ -196,7 +208,7 @@ function CreateDid ({ className }: Props): React.ReactElement<Props> {
             isDisabled={!name || !accountPassword || !selectedAddress || !didPassword}
             onClick={() => didPassword && _onCreate(name, accountPassword, didPassword)}
           >
-            {t<string>('Generate DID')}
+            {t<string>('Create DID')}
           </NextStepButton>
         )}
       </ButtonArea>
@@ -207,6 +219,60 @@ function CreateDid ({ className }: Props): React.ReactElement<Props> {
 export default styled(CreateDid)(({ theme }: Props) => `
   color: ${theme.textColor};
   height: 100%;
+
+  .stepsBar {
+    align-items: center;
+    display: flex;
+    gap: 10px;
+    margin: -8px 0 14px;
+    padding: 0 2px;
+  }
+
+  .step {
+    align-items: center;
+    color: ${theme.labelColor};
+    display: inline-flex;
+    gap: 6px;
+    opacity: 0.75;
+  }
+
+  .step .index {
+    align-items: center;
+    border: 1px solid ${theme.inputBorderColor};
+    border-radius: 999px;
+    display: inline-flex;
+    font-size: 11px;
+    font-weight: 700;
+    height: 18px;
+    justify-content: center;
+    width: 18px;
+  }
+
+  .step .name {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .step.isActive,
+  .step.isDone {
+    color: ${theme.primaryColor};
+    opacity: 1;
+  }
+
+  .step.isActive .index,
+  .step.isDone .index {
+    background: ${theme.primaryColor};
+    border-color: ${theme.primaryColor};
+    color: ${theme.buttonTextColor};
+  }
+
+  .divider {
+    background: ${theme.inputBorderColor};
+    height: 1px;
+    min-width: 28px;
+  }
 
   .generatedDid {
     margin-bottom: 12px;

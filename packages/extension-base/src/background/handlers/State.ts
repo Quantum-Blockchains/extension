@@ -440,6 +440,7 @@ export default class State {
   public updateAuthorizedAccounts (authorizedAccountDiff: AuthorizedAccountsDiff): void {
     authorizedAccountDiff.forEach(([url, authorizedAccountDiff, authorizedDids]) => {
       this.#authUrls[url].authorizedAccounts = authorizedAccountDiff;
+
       if (authorizedDids !== undefined) {
         this.#authUrls[url].authorizedDids = authorizedDids;
       }

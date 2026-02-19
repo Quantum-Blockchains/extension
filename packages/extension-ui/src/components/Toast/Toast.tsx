@@ -31,8 +31,9 @@ export default styled(Toast)<{visible: boolean}>`
   transform: translateX(-50%);
   && {
     margin: auto;
-    border-radius: 25px;
+    border-radius: ${({ theme }: ThemeProps): string => theme.borderRadius};
     background: ${({ theme }: ThemeProps): string => theme.highlightedAreaBackground};
+    border: 1px solid ${({ theme }: ThemeProps): string => theme.inputBorderColor};
   }
 
   .snackbar-content {

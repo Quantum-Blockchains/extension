@@ -25,7 +25,17 @@ const TextInput = css(({ theme, withError }: Props) => `
   outline: none;
   padding: 0.5rem 0.75rem;
   resize: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   width: 100%;
+
+  &::placeholder {
+    color: ${theme.labelColor};
+  }
+
+  &:focus-visible {
+    border-color: ${theme.primaryColor};
+    box-shadow: ${theme.focusRing};
+  }
 
   &:read-only {
     background: ${theme.readonlyInputBackground};

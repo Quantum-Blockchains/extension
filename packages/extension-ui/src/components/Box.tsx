@@ -32,11 +32,12 @@ export default styled(Box)(({ theme }: ThemeProps) => `
   margin: 0.75rem 24px;
   padding: ${theme.boxPadding};
   position: relative;
+  box-shadow: 0 8px 20px ${theme.boxShadow};
 
   .banner {
-    background: darkorange;
+    background: ${theme.primaryColor};
     border-radius: 0 ${theme.borderRadius} 0 ${theme.borderRadius};
-    color: white;
+    color: ${theme.buttonTextColor};
     font-size: 0.75rem;
     padding: 0.25rem 0.5rem;
     position: absolute;

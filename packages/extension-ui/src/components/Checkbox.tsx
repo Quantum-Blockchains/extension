@@ -65,7 +65,7 @@ export default styled(Checkbox)(({ theme }: ThemeProps) => `
     padding-top: 1px;
     color: ${theme.subTextColor};
     font-size: ${theme.fontSize};
-    line-height: ${theme.lineHeight};
+    line-height: 22px;
 
     & input {
       position: absolute;
@@ -84,7 +84,7 @@ export default styled(Checkbox)(({ theme }: ThemeProps) => `
       border-radius: ${theme.borderRadius};
       background-color: ${theme.readonlyInputBackground};
       border: 1px solid ${theme.inputBorderColor};
-      border: 1px solid ${theme.inputBorderColor};
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
       &:after {
         content: '';
         display: none;
@@ -101,6 +101,12 @@ export default styled(Checkbox)(({ theme }: ThemeProps) => `
 
     &:hover input ~ span {
       background-color: ${theme.inputBackground};
+      border-color: ${theme.primaryColor};
+    }
+
+    input:focus-visible ~ span {
+      border-color: ${theme.primaryColor};
+      box-shadow: ${theme.focusRing};
     }
 
     input:checked ~ span:after {

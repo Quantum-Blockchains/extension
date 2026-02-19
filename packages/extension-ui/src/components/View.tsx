@@ -41,8 +41,13 @@ function View ({ children, className }: Props): React.ReactElement<Props> {
 }
 
 const BodyTheme = createGlobalStyle<ThemeProps>`
+  * {
+    box-sizing: border-box;
+  }
+
   body {
     background-color: ${({ theme }: ThemeProps): string => theme.bodyColor};
+    background-image: linear-gradient(160deg, ${({ theme }: ThemeProps): string => theme.bodyColor} 0%, ${({ theme }: ThemeProps): string => theme.background} 100%);
   }
 
   html {

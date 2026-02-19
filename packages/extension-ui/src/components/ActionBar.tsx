@@ -22,7 +22,7 @@ export default styled(ActionBar)`
   align-content: flex-end;
   display: flex;
   justify-content: space-between;
-  padding: 0.25rem;
+  padding: 0.25rem 0;
   text-align: right;
 
   a {

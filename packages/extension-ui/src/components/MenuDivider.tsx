@@ -20,5 +20,5 @@ function MenuDivider ({ className }: Props): React.ReactElement<Props> {
 export default styled(MenuDivider)(({ theme }: Props) => `
   padding-top: 16px;
   margin-bottom: 16px;
-  border-bottom: 1px solid ${theme.inputBorderColor};
+  border-bottom: 1px solid ${theme.id === 'dark' ? 'rgba(148, 163, 184, 0.35)' : 'rgba(107, 127, 162, 0.35)'};
 `);

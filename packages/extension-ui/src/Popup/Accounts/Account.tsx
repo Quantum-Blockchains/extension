@@ -191,7 +191,7 @@ export default styled(Account)(({ theme }: ThemeProps) => `
   }
 
   .menuItem {
-    border-radius: 8px;
+    border-radius: ${theme.borderRadius};
     display: block;
     font-size: 15px;
     line-height: 20px;

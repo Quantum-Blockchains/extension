@@ -55,8 +55,8 @@ function InputFilter ({ className, onChange, placeholder, value, withReset = fal
 }
 
 export default styled(InputFilter)(({ theme }: Props) => `
-  padding-left: 1rem !important;
-  padding-right: 1rem !important;
+  padding-left: 0.25rem !important;
+  padding-right: 0.5rem !important;
   position: relative;
 
   .resetIcon {

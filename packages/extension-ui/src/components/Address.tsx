@@ -199,7 +199,7 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
   const parentNameSuri = getParentNameSuri(parentName, suri);
 
   return (
-    <div className={className}>
+    <div className={`${className || ''}${showActionsMenu ? ' isMenuOpen' : ''}`}>
       <div className='infoRow'>
         <Identicon
           className='identityIcon'
@@ -312,9 +312,14 @@ export default styled(Address)(({ theme }: ThemeProps) => `
   background: ${theme.boxBackground};
   border: 1px solid ${theme.boxBorderColor};
   box-sizing: border-box;
-  border-radius: 4px;
+  border-radius: ${theme.borderRadius};
+  box-shadow: 0 6px 16px ${theme.boxShadow};
   margin-bottom: 8px;
   position: relative;
+
+  &.isMenuOpen {
+    z-index: 4000;
+  }
 
   .banner {
     font-size: 12px;
@@ -324,8 +329,8 @@ export default styled(Address)(({ theme }: ThemeProps) => `
 
     &.chain {
       background: ${theme.primaryColor};
-      border-radius: 0 0 0 10px;
-      color: white;
+      border-radius: 0 0 0 ${theme.borderRadius};
+      color: ${theme.buttonTextColor};
       padding: 0.1rem 0.5rem 0.1rem 0.75rem;
       right: 0;
       z-index: 1;
@@ -379,7 +384,8 @@ export default styled(Address)(({ theme }: ThemeProps) => `
   }
 
   .info {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
   }
 
   .infoRow {
@@ -388,7 +394,7 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     justify-content: flex-start;
     align-items: center;
     height: 72px;
-    border-radius: 4px;
+    border-radius: ${theme.borderRadius};
   }
 
   img {
@@ -403,7 +409,8 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     margin: 2px 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 300px;
+    width: auto;
+    max-width: 100%;
     white-space: nowrap;
 
     &.displaced {
@@ -418,7 +425,8 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     overflow: hidden;
     padding: 0.25rem 0 0 0.8rem;
     text-overflow: ellipsis;
-    width: 270px;
+    width: auto;
+    max-width: 100%;
     white-space: nowrap;
   }
 
@@ -449,9 +457,9 @@ export default styled(Address)(({ theme }: ThemeProps) => `
   }
 
   .movableMenu {
-    margin-top: -20px;
+    margin-top: 6px;
     right: 28px;
-    top: 0;
+    top: 100%;
 
     &.isMoved {
       top: auto;

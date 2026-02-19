@@ -5,6 +5,7 @@ import type { ThemeProps } from '../types.js';
 
 import React from 'react';
 
+import { getMenuVisualConfig } from './menuVisual.js';
 import { styled } from '../styled.js';
 
 interface Props {
@@ -24,15 +25,25 @@ function Menu ({ children, className, reference }: Props): React.ReactElement<Pr
   );
 }
 
-export default styled(Menu)(({ theme }: ThemeProps) => `
-  background: ${theme.popupBackground};
-  border-radius: 4px;
-  border: 1px solid ${theme.boxBorderColor};
+export default styled(Menu)(({ theme }: ThemeProps) => {
+  const visual = getMenuVisualConfig(theme);
+
+  return `
+  background: ${visual.glassBg};
+  border-radius: 12px;
+  border: 1px solid ${visual.border};
   box-sizing: border-box;
-  box-shadow: 0 0 10px ${theme.boxShadow};
+  box-shadow: 0 10px 26px ${theme.boxShadow};
+  backdrop-filter: blur(12px) saturate(125%);
+  -webkit-backdrop-filter: blur(12px) saturate(125%);
   margin-top: 60px;
-  padding: 16px 0;
+  padding: 12px 0;
   position: absolute;
   right: 0;
-  z-index: 2;
-`);
+  z-index: 5000;
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    background: ${visual.fallbackBg};
+  }
+`;
+});

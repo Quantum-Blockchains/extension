@@ -57,12 +57,13 @@ export default styled(Link)(({ isDanger, theme }: Props & ThemeProps) => `
   align-items: center;
   color: ${isDanger ? theme.textColorDanger : theme.textColor};
   display: flex;
-  opacity: 0.85;
+  opacity: 0.95;
   text-decoration: none;
+  transition: opacity 0.15s ease, color 0.15s ease;
   vertical-align: middle;
 
   &:hover {
-    color: ${isDanger ? theme.textColorDanger : theme.textColor};
+    color: ${isDanger ? theme.textColorDanger : theme.primaryColor};
     opacity: 1.0;
   }
 

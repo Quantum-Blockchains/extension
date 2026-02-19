@@ -4,12 +4,12 @@
 import type { Theme, ThemeProps } from '../types.js';
 
 import { faExpand, faTasks } from '@fortawesome/free-solid-svg-icons';
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ThemeContext } from 'styled-components';
 
 import settings from '@polkadot/ui-settings';
 
-import { ActionContext, ActionText, Checkbox, Dropdown, Menu, MenuDivider, MenuItem, Svg, Switch, themes, ThemeSwitchContext } from '../components/index.js';
+import { ActionContext, ActionText, Checkbox, Menu, MenuDivider, MenuItem, Svg, Switch, themes, ThemeSwitchContext } from '../components/index.js';
 import useIsPopup from '../hooks/useIsPopup.js';
 import useTranslation from '../hooks/useTranslation.js';
 import { setNotification, windowOpen } from '../messaging.js';
@@ -32,6 +32,10 @@ function MenuSettings ({ className, reference }: Props): React.ReactElement<Prop
   const setTheme = useContext(ThemeSwitchContext);
   const isPopup = useIsPopup();
   const languageOptions = useMemo(() => getLanguageOptions(), []);
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const languageRef = useRef<HTMLDivElement>(null);
+  const notificationRef = useRef<HTMLDivElement>(null);
   const onAction = useContext(ActionContext);
 
   useEffect(() => {
@@ -59,9 +63,48 @@ function MenuSettings ({ className, reference }: Props): React.ReactElement<Prop
   );
 
   const _onChangeLang = useCallback(
-    (value: string): void => {
-      settings.set({ i18nLang: value });
+    (value: number | string): void => {
+      settings.set({ i18nLang: String(value) });
+      setIsLangOpen(false);
     }, []
+  );
+
+  const _onToggleLang = useCallback(() => {
+    setIsLangOpen((open) => !open);
+    setIsNotificationOpen(false);
+  }, []);
+
+  const _onToggleNotification = useCallback(() => {
+    setIsNotificationOpen((open) => !open);
+    setIsLangOpen(false);
+  }, []);
+
+  useEffect(() => {
+    const onDocumentClick = (event: MouseEvent): void => {
+      const target = event.target as Node;
+
+      if (isLangOpen && languageRef.current && !languageRef.current.contains(target)) {
+        setIsLangOpen(false);
+      }
+
+      if (isNotificationOpen && notificationRef.current && !notificationRef.current.contains(target)) {
+        setIsNotificationOpen(false);
+      }
+    };
+
+    document.addEventListener('click', onDocumentClick);
+
+    return () => document.removeEventListener('click', onDocumentClick);
+  }, [isLangOpen, isNotificationOpen]);
+
+  const langValueLabel = useMemo(
+    () => languageOptions.find(({ value }) => value === settings.i18nLang)?.text || settings.i18nLang,
+    [languageOptions]
+  );
+
+  const notificationValueLabel = useMemo(
+    () => notificationOptions.find(({ value }) => value === notification)?.text || notification,
+    [notification]
   );
 
   const _goToAuthList = useCallback(
@@ -90,25 +133,65 @@ function MenuSettings ({ className, reference }: Props): React.ReactElement<Prop
         className='setting'
         title={t<string>('Language')}
       >
-        <Dropdown
-          className='dropdown'
-          label=''
-          onChange={_onChangeLang}
-          options={languageOptions}
-          value={settings.i18nLang}
-        />
+        <div
+          className='dropdown customDropdown'
+          ref={languageRef}
+        >
+          <button
+            className='dropdownTrigger'
+            onClick={_onToggleLang}
+            type='button'
+          >
+            <span>{langValueLabel}</span>
+            <span className='arrow'>▼</span>
+          </button>
+          {isLangOpen && (
+            <div className='dropdownList'>
+              {languageOptions.map(({ text, value }) => (
+                <button
+                  className={`dropdownOption ${value === settings.i18nLang ? 'isSelected' : ''}`}
+                  key={value}
+                  onClick={() => _onChangeLang(value)}
+                  type='button'
+                >
+                  {text}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </MenuItem>
       <MenuItem
         className='setting'
         title={t<string>('Notifications')}
       >
-        <Dropdown
-          className='dropdown'
-          label=''
-          onChange={_onChangeNotification}
-          options={notificationOptions}
-          value={notification}
-        />
+        <div
+          className='dropdown customDropdown'
+          ref={notificationRef}
+        >
+          <button
+            className='dropdownTrigger'
+            onClick={_onToggleNotification}
+            type='button'
+          >
+            <span>{notificationValueLabel}</span>
+            <span className='arrow'>▼</span>
+          </button>
+          {isNotificationOpen && (
+            <div className='dropdownList'>
+              {notificationOptions.map(({ text, value }) => (
+                <button
+                  className={`dropdownOption ${value === notification ? 'isSelected' : ''}`}
+                  key={value}
+                  onClick={() => _onChangeNotification(value)}
+                  type='button'
+                >
+                  {text}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </MenuItem>
       <MenuItem
         className='setting'
@@ -146,7 +229,8 @@ function MenuSettings ({ className, reference }: Props): React.ReactElement<Prop
 
 export default React.memo(styled(MenuSettings)(({ theme }: Props) => `
   margin-top: 50px;
-  right: 24px;
+  right: 24px !important;
+  transform: none !important;
   user-select: none;
 
   .openWindow, .manageWebsiteAccess{
@@ -188,6 +272,67 @@ export default React.memo(styled(MenuSettings)(({ theme }: Props) => `
       margin-top: 9px;
       margin-right: 0;
       width: 100%;
+    }
+  }
+
+  .customDropdown {
+    position: relative;
+  }
+
+  .dropdownTrigger {
+    align-items: center;
+    background: ${theme.readonlyInputBackground};
+    border: 1px solid ${theme.inputBorderColor};
+    border-radius: ${theme.borderRadius};
+    color: ${theme.textColor};
+    cursor: pointer;
+    display: flex;
+    font-family: ${theme.fontFamily};
+    font-size: ${theme.fontSize};
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    width: 100%;
+  }
+
+  .dropdownTrigger .arrow {
+    color: ${theme.iconNeutralColor};
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  .dropdownList {
+    background: ${theme.readonlyInputBackground};
+    border: 1px solid ${theme.inputBorderColor};
+    border-radius: ${theme.borderRadius};
+    box-shadow: 0 8px 18px ${theme.boxShadow};
+    left: 0;
+    margin-top: 4px;
+    max-height: 220px;
+    overflow-y: auto;
+    position: absolute;
+    right: 0;
+    z-index: 20;
+  }
+
+  .dropdownOption {
+    background: transparent;
+    border: 0;
+    color: ${theme.textColor};
+    cursor: pointer;
+    display: block;
+    font-family: ${theme.fontFamily};
+    font-size: ${theme.fontSize};
+    padding: 0.4rem 0.6rem;
+    text-align: left;
+    width: 100%;
+
+    &.isSelected {
+      background: ${theme.highlightedAreaBackground};
+    }
+
+    &:hover {
+      background: ${theme.highlightedAreaBackground};
     }
   }
 `));

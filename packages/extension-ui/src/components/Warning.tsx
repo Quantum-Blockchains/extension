@@ -31,11 +31,14 @@ function Warning ({ children, className = '', isBelowInput, isDanger }: Props): 
 export default React.memo(styled(Warning)<Props>(({ isDanger, theme }: Props) => `
   display: flex;
   flex-direction: row;
+  align-items: center;
   padding-left: 18px;
   color: ${theme.subTextColor};
   margin-right: 20px;
   margin-top: 6px;
   border-left: ${`0.25rem solid ${theme.iconWarningColor}`};
+  background: ${theme.warningBackground};
+  border-radius: 0 ${theme.borderRadius} ${theme.borderRadius} 0;
 
   &.belowInput {
     font-size: ${theme.labelFontSize};

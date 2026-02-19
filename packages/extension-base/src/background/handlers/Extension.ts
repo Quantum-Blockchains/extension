@@ -22,9 +22,9 @@ import { accounts as accountsObservable } from '@polkadot/ui-keyring/observable/
 import { assert, compactAddLength, isHex, stringToU8a, u8aConcat, u8aToHex } from '@polkadot/util';
 import { base58Decode, base58Encode, blake2AsU8a, cryptoWaitReady, keyExtractSuri, mldsa44PairFromSeed, mldsa44Sign, mldsa44Verify, mnemonicGenerate, mnemonicValidate, randomAsU8a } from '@polkadot/util-crypto';
 
+import { DidsStore } from '../../stores/index.js';
 import { withErrorLog } from './helpers.js';
 import { createSubscription, unsubscribe } from './subscriptions.js';
-import { DidsStore } from '../../stores/index.js';
 
 type CachedUnlocks = Record<string, number>;
 
@@ -34,7 +34,7 @@ const ETH_DERIVE_DEFAULT = "/m/44'/60'/0'/0/0";
 const DID_CREATE_PREFIX = 'QSB_DID_CREATE';
 const DID_DEACTIVATE_PREFIX = 'QSB_DID_DEACTIVATE';
 // const QSB_POSEIDON_ENDPOINT = 'wss://qsb.qbck.io:9945';
-const QSB_POSEIDON_ENDPOINT = 'ws://127.0.0.1:9933';
+const QSB_POSEIDON_ENDPOINT = 'wss://qsb.qbck.io:9945';
 
 function getSuri (seed: string, type?: KeypairType): string {
   return type === 'ethereum'
@@ -355,7 +355,7 @@ export default class Extension {
 
     assert(queued, 'Unable to find request');
 
-    const { reject, resolve, request } = queued;
+    const { reject, request, resolve } = queued;
     const pair = keyring.getPair(queued.account.address);
 
     if (!pair) {
@@ -610,7 +610,7 @@ export default class Extension {
     return this.#state.getConnectedTabsUrl();
   }
 
-  private async didsCreate ({ accountAddress, name, accountPassword, didPassword }: RequestDidCreate): Promise<DidRecord> {
+  private async didsCreate ({ accountAddress, accountPassword, didPassword, name }: RequestDidCreate): Promise<DidRecord> {
     await cryptoWaitReady();
 
     const signerPair = keyring.getPair(accountAddress);
@@ -929,6 +929,7 @@ export default class Extension {
       return withStatus;
     } catch (error) {
       console.error(error);
+
       return records;
     }
   }
