@@ -14,6 +14,7 @@ import getNetworkMap from '@polkadot/extension-ui/util/getNetworkMap';
 
 import details from '../../assets/details.svg';
 import { AccountContext, ActionContext, Link, MenuDivider, MenuItem } from '../../components/index.js';
+import { getSurfaceCardStyles } from '../../components/cardStyles.js';
 import Menu from '../../components/Menu.js';
 import Svg from '../../components/Svg.js';
 import useOutsideClick from '../../hooks/useOutsideClick.js';
@@ -312,7 +313,7 @@ export default styled(Accounts)(({ theme }: Props) => `
     flex-direction: column;
     scrollbar-width: none;
     position: relative;
-    z-index: 1;
+    z-index: ${theme.zIndexBase};
   }
 
   .contentScroll {
@@ -363,9 +364,7 @@ export default styled(Accounts)(({ theme }: Props) => `
   }
 
   .didItem {
-    background: ${theme.boxBackground};
-    border: 1px solid ${theme.boxBorderColor};
-    border-radius: ${theme.borderRadius};
+    ${getSurfaceCardStyles(theme)}
     display: flex;
     align-items: center;
     gap: 10px;
@@ -373,12 +372,11 @@ export default styled(Accounts)(({ theme }: Props) => `
     padding: 0;
     margin-bottom: 10px;
     position: relative;
-    box-shadow: 0 6px 16px ${theme.boxShadow};
   }
 
   .didName {
     color: ${theme.textColor};
-    font-size: 14px;
+    font-size: ${theme.fontSizeLg};
     margin-bottom: 0;
     font-weight: 600;
   }
@@ -425,7 +423,7 @@ export default styled(Accounts)(({ theme }: Props) => `
 
   .didValue {
     color: ${theme.labelColor};
-    font-size: 12px;
+    font-size: ${theme.fontSizeSm};
     display: flex;
     align-items: center;
     gap: 6px;
@@ -438,8 +436,8 @@ export default styled(Accounts)(({ theme }: Props) => `
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 12px;
-    line-height: 16px;
+    font-size: ${theme.fontSizeSm};
+    line-height: ${theme.lineHeightXs};
     font-weight: 400;
   }
 

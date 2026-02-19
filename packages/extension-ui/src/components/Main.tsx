@@ -29,7 +29,7 @@ export default styled(Main)(({ theme }: ThemeProps) => `
   font-size: ${theme.fontSize};
   line-height: ${theme.lineHeight};
   border: ${theme.id === 'light' ? 'none' : `1px solid ${theme.inputBorderColor}`};
-  border-radius: ${theme.id === 'light' ? '0' : '12px'};
+  border-radius: ${theme.id === 'light' ? '0' : theme.borderRadiusLarge};
   box-shadow: ${theme.id === 'light' ? 'none' : `0 14px 32px ${theme.boxShadow}`};
   overflow: hidden;
   position: relative;

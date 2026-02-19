@@ -216,7 +216,7 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
   font-weight: normal;
   margin: 0;
   position: relative;
-  z-index: 200;
+  z-index: ${theme.zIndexHeader};
   margin-bottom: 20px;
 
   && {
@@ -231,7 +231,7 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
     min-height: 72px;
     background: ${theme.background};
     position: relative;
-    z-index: 200;
+    z-index: ${theme.zIndexHeader};
 
     .branding {
       display: flex;
@@ -241,7 +241,7 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
       color: ${theme.labelColor};
       font-family: ${theme.fontFamily};
       text-align: center;
-      margin-left: 24px;
+      margin-left: ${theme.space5};
 
       .logo {
         height: 28px;
@@ -324,8 +324,8 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
     .popupMenus {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      margin-right: 10px;
+      gap: ${theme.space2};
+      margin-right: ${theme.space2};
     }
 
     .customAddMenu {
@@ -334,7 +334,7 @@ export default React.memo(styled(Header)(({ theme }: Props) => `
       transform: none !important;
       min-width: 200px;
       user-select: none;
-      z-index: 5000;
+      z-index: ${theme.zIndexMenu};
     }
 
     .customAddMenu .menuItem {

@@ -27,6 +27,7 @@ import { styled } from '../styled.js';
 import { DEFAULT_TYPE } from '../util/defaultType.js';
 import getParentNameSuri from '../util/getParentNameSuri.js';
 import { AccountContext, SettingsContext } from './contexts.js';
+import { getSurfaceCardStyles } from './cardStyles.js';
 import Identicon from './Identicon.js';
 import Menu from './Menu.js';
 import Svg from './Svg.js';
@@ -309,16 +310,13 @@ function Address ({ actions, address, children, className, genesisHash, isExtern
 }
 
 export default styled(Address)(({ theme }: ThemeProps) => `
-  background: ${theme.boxBackground};
-  border: 1px solid ${theme.boxBorderColor};
+  ${getSurfaceCardStyles(theme)}
   box-sizing: border-box;
-  border-radius: ${theme.borderRadius};
-  box-shadow: 0 6px 16px ${theme.boxShadow};
-  margin-bottom: 8px;
+  margin-bottom: ${theme.space2};
   position: relative;
 
   &.isMenuOpen {
-    z-index: 4000;
+    z-index: ${theme.zIndexCardMenu};
   }
 
   .banner {
@@ -404,8 +402,8 @@ export default styled(Address)(({ theme }: ThemeProps) => `
   }
 
   .name {
-    font-size: 16px;
-    line-height: 22px;
+    font-size: ${theme.fontSizeLg};
+    line-height: ${theme.lineHeightLg};
     margin: 2px 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -434,8 +432,8 @@ export default styled(Address)(({ theme }: ThemeProps) => `
     overflow: hidden;
     text-overflow: ellipsis;
     color: ${theme.labelColor};
-    font-size: 12px;
-    line-height: 16px;
+    font-size: ${theme.fontSizeSm};
+    line-height: ${theme.lineHeightXs};
   }
 
   .detailsIcon {

@@ -8,6 +8,7 @@ import React, { useCallback, useContext, useEffect, useMemo, useState } from 're
 import { useParams } from 'react-router';
 
 import { ActionContext, Button, Checkbox, Warning } from '../../components/index.js';
+import { getSurfaceCardStyles } from '../../components/cardStyles.js';
 import useTranslation from '../../hooks/useTranslation.js';
 import { didsList, getAuthList, updateAuthorization } from '../../messaging.js';
 import { Header } from '../../partials/index.js';
@@ -174,15 +175,13 @@ export default styled(DidManagement)(({ theme }: Props) => `
   }
 
   .didItem {
-    border: 1px solid ${theme.inputBorderColor};
-    border-radius: ${theme.borderRadius};
-    background: ${theme.readonlyInputBackground};
+    ${getSurfaceCardStyles(theme)}
+    background: ${theme.boxBackground};
     min-height: 72px;
     display: flex;
     align-items: center;
     padding: 0 12px;
     margin-bottom: 0;
-    box-shadow: 0 6px 16px ${theme.boxShadow};
     flex: 1;
   }
 
@@ -219,15 +218,15 @@ export default styled(DidManagement)(({ theme }: Props) => `
 
   .didName {
     color: ${theme.textColor};
-    font-size: 16px;
-    line-height: 22px;
+    font-size: ${theme.fontSizeLg};
+    line-height: ${theme.lineHeightLg};
     font-weight: 600;
   }
 
   .didValue {
     color: ${theme.labelColor};
-    font-size: 12px;
-    line-height: 16px;
+    font-size: ${theme.fontSizeSm};
+    line-height: ${theme.lineHeightXs};
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

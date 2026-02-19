@@ -33,14 +33,14 @@ export default styled(Menu)(({ theme }: ThemeProps) => {
   border-radius: 12px;
   border: 1px solid ${visual.border};
   box-sizing: border-box;
-  box-shadow: 0 10px 26px ${theme.boxShadow};
+  box-shadow: ${theme.cardShadow};
   backdrop-filter: blur(12px) saturate(125%);
   -webkit-backdrop-filter: blur(12px) saturate(125%);
   margin-top: 60px;
   padding: 12px 0;
   position: absolute;
   right: 0;
-  z-index: 5000;
+  z-index: ${theme.zIndexMenu};
 
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     background: ${visual.fallbackBg};

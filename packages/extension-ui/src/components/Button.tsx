@@ -87,6 +87,12 @@ export default styled(Button)(({ isDanger, theme }: Props) => `
     visibility: hidden;
   }
 
+  .children {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .disabledOverlay {
     background: ${theme.surfaceOverlay};
     border-radius: ${theme.borderRadius};

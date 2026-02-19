@@ -305,14 +305,14 @@ export default React.memo(styled(MenuSettings)(({ theme }: Props) => `
     background: ${theme.readonlyInputBackground};
     border: 1px solid ${theme.inputBorderColor};
     border-radius: ${theme.borderRadius};
-    box-shadow: 0 8px 18px ${theme.boxShadow};
+    box-shadow: ${theme.cardShadow};
     left: 0;
     margin-top: 4px;
     max-height: 220px;
     overflow-y: auto;
     position: absolute;
     right: 0;
-    z-index: 20;
+    z-index: ${theme.zIndexDropdown};
   }
 
   .dropdownOption {
