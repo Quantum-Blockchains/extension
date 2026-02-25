@@ -16,8 +16,15 @@ import keyring from '@polkadot/ui-keyring';
 import { assert } from '@polkadot/util';
 import { cryptoWaitReady } from '@polkadot/util-crypto';
 
+const action = (chrome as typeof chrome & { action?: typeof chrome.browserAction }).action || chrome.browserAction;
+const ALLOWED_TAB_URL_SCHEMES = ['http:', 'https:', 'ipfs:', 'ipns:'];
+
+function isAllowedTabUrl (url?: string): url is string {
+  return !!url && ALLOWED_TAB_URL_SCHEMES.some((prefix) => url.startsWith(prefix));
+}
+
 // setup the notification (same a FF default background, white text)
-withErrorLog(() => chrome.browserAction.setBadgeBackgroundColor({ color: '#d90000' }));
+withErrorLog(() => action.setBadgeBackgroundColor({ color: '#d90000' }));
 
 // listen to all messages and handle appropriately
 chrome.runtime.onConnect.addListener((port): void => {
@@ -33,11 +40,10 @@ function getActiveTabs () {
   // queriing the current active tab in the current window should only ever return 1 tab
   // although an array is specified here
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    // get the urls of the active tabs. In the case of new tab the url may be empty or undefined
-    // we filter these out
+    // include only URL schemes handled by the background state
     const urls: string[] = tabs
       .map(({ url }) => url)
-      .filter((url) => !!url) as string[];
+      .filter(isAllowedTabUrl);
 
     const request: TransportRequestMessage<'pri(activeTabsUrl.update)'> = {
       id: 'background',
@@ -50,10 +56,30 @@ function getActiveTabs () {
   });
 }
 
+chrome.runtime.onMessage.addListener((message: { type?: string; filename?: string; jsonText?: string }, _, sendResponse) => {
+  if (message.type !== 'qsb(download.json)') {
+    return;
+  }
+
+  if (!chrome.downloads?.download || !message.filename || !message.jsonText) {
+    sendResponse({ ok: false });
+
+    return;
+  }
+
+  const url = `data:application/json;charset=utf-8,${encodeURIComponent(message.jsonText)}`;
+
+  chrome.downloads.download({ filename: message.filename, saveAs: false, url }, (downloadId) => {
+    sendResponse({ ok: !!downloadId && !chrome.runtime.lastError });
+  });
+
+  return true;
+});
+
 // listen to tab updates this is fired on url change
 chrome.tabs.onUpdated.addListener((_, changeInfo) => {
   // we are only interested in url change
-  if (!changeInfo.url) {
+  if (!isAllowedTabUrl(changeInfo.url)) {
     return;
   }
 

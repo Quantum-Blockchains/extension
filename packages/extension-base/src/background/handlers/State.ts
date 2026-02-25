@@ -68,7 +68,8 @@ interface DidSignRequest extends Resolver<ResponseDidSign> {
   url: string;
 }
 
-const NOTIFICATION_URL = chrome.extension.getURL('notification.html');
+const NOTIFICATION_URL = chrome.runtime.getURL('notification.html');
+const action = (chrome as typeof chrome & { action?: typeof chrome.browserAction }).action || chrome.browserAction;
 
 const POPUP_WINDOW_OPTS: chrome.windows.CreateData = {
   focused: true,
@@ -94,6 +95,28 @@ export enum NotificationOptions {
 
 const AUTH_URLS_KEY = 'authUrls';
 const DEFAULT_AUTH_ACCOUNTS = 'defaultAuthAccounts';
+const HAS_LOCAL_STORAGE = typeof localStorage !== 'undefined';
+const workerStorageFallback: Record<string, string> = {};
+
+function readStored (key: string, fallback: string): string {
+  if (HAS_LOCAL_STORAGE) {
+    return localStorage.getItem(key) || fallback;
+  }
+
+  return workerStorageFallback[key] || fallback;
+}
+
+function writeStored (key: string, value: string): void {
+  if (HAS_LOCAL_STORAGE) {
+    localStorage.setItem(key, value);
+  } else {
+    workerStorageFallback[key] = value;
+  }
+
+  if (chrome.storage?.local) {
+    withErrorLog(() => chrome.storage.local.set({ [key]: value }));
+  }
+}
 
 function extractMetadata (store: MetadataStore): void {
   store.allMap((map): void => {
@@ -171,16 +194,32 @@ export default class State {
     extractMetadata(this.#metaStore);
 
     // retrieve previously set authorizations
-    const authString = localStorage.getItem(AUTH_URLS_KEY) || '{}';
+    const authString = readStored(AUTH_URLS_KEY, '{}');
     const previousAuth = JSON.parse(authString) as AuthUrls;
 
     this.#authUrls = previousAuth;
 
     // retrieve previously set default auth accounts
-    const defaultAuthString = localStorage.getItem(DEFAULT_AUTH_ACCOUNTS) || '[]';
+    const defaultAuthString = readStored(DEFAULT_AUTH_ACCOUNTS, '[]');
     const previousDefaultAuth = JSON.parse(defaultAuthString) as string[];
 
     this.defaultAuthAccountSelection = previousDefaultAuth;
+
+    if (!HAS_LOCAL_STORAGE && chrome.storage?.local) {
+      withErrorLog(() =>
+        chrome.storage.local.get([AUTH_URLS_KEY, DEFAULT_AUTH_ACCOUNTS], (items): void => {
+          if (typeof items[AUTH_URLS_KEY] === 'string') {
+            workerStorageFallback[AUTH_URLS_KEY] = items[AUTH_URLS_KEY] as string;
+            Object.assign(this.#authUrls, JSON.parse(items[AUTH_URLS_KEY] as string) as AuthUrls);
+          }
+
+          if (typeof items[DEFAULT_AUTH_ACCOUNTS] === 'string') {
+            workerStorageFallback[DEFAULT_AUTH_ACCOUNTS] = items[DEFAULT_AUTH_ACCOUNTS] as string;
+            this.defaultAuthAccountSelection = JSON.parse(items[DEFAULT_AUTH_ACCOUNTS] as string) as string[];
+          }
+        })
+      );
+    }
   }
 
   public get knownMetadata (): MetadataDef[] {
@@ -284,14 +323,11 @@ export default class State {
 
   public udateCurrentTabsUrl (urls: string[]) {
     const connectedTabs = urls.map((url) => {
-      let strippedUrl = '';
-
-      // the assert in stripUrl may throw for new tabs with "chrome://newtab/"
-      try {
-        strippedUrl = this.stripUrl(url);
-      } catch (e) {
-        console.error(e);
+      if (!(url.startsWith('http:') || url.startsWith('https:') || url.startsWith('ipfs:') || url.startsWith('ipns:'))) {
+        return undefined;
       }
+
+      const strippedUrl = this.stripUrl(url);
 
       // return the stripped url only if this website is known
       return !!strippedUrl && this.authUrls[strippedUrl]
@@ -313,11 +349,11 @@ export default class State {
   }
 
   private saveCurrentAuthList () {
-    localStorage.setItem(AUTH_URLS_KEY, JSON.stringify(this.#authUrls));
+    writeStored(AUTH_URLS_KEY, JSON.stringify(this.#authUrls));
   }
 
   private saveDefaultAuthAccounts () {
-    localStorage.setItem(DEFAULT_AUTH_ACCOUNTS, JSON.stringify(this.defaultAuthAccountSelection));
+    writeStored(DEFAULT_AUTH_ACCOUNTS, JSON.stringify(this.defaultAuthAccountSelection));
   }
 
   public updateDefaultAuthAccounts (newList: string[]) {
@@ -399,7 +435,7 @@ export default class State {
           : (signCount ? `${signCount}` : '')
     );
 
-    withErrorLog(() => chrome.browserAction.setBadgeText({ text }));
+    withErrorLog(() => action.setBadgeText({ text }));
 
     if (shouldClose && text === '') {
       this.popupClose();

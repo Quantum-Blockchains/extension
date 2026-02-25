@@ -4,7 +4,6 @@
 import type { RouteComponentProps } from 'react-router';
 import type { ThemeProps } from '../../types.js';
 
-import fileSaver from 'file-saver';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { withRouter } from 'react-router';
 
@@ -14,6 +13,7 @@ import useTranslation from '../../hooks/useTranslation.js';
 import { exportDid } from '../../messaging.js';
 import { Header } from '../../partials/index.js';
 import { styled } from '../../styled.js';
+import { downloadJson } from '../../util/downloadJson.js';
 
 const MIN_LENGTH = 6;
 
@@ -48,10 +48,7 @@ function ExportDid ({ className, match: { params: { did } } }: Props): React.Rea
 
       exportDid(normalizedDid, pass)
         .then(({ exportedJson }) => {
-          const blob = new Blob([JSON.stringify(exportedJson)], { type: 'application/json; charset=utf-8' });
-
-          // eslint-disable-next-line deprecation/deprecation
-          fileSaver.saveAs(blob, `${normalizedDid}.json`);
+          downloadJson(exportedJson, `${normalizedDid}.json`);
 
           window.localStorage.setItem('accounts_active_tab', 'dids');
           onAction('/');
